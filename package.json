@@ -13,8 +13,11 @@
   "license": "ISC",
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
+    "@types/got": "^9.6.12",
     "@types/node": "^16.11.11",
+    "@types/stream-json": "^1.7.1",
     "@types/superagent": "^4.1.13",
+    "@types/unzipper": "^0.10.4",
     "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typescript-eslint/parser": "^5.5.0",
     "eslint": "^8.3.0",
@@ -29,7 +32,11 @@
   },
   "dependencies": {
     "dotenv": "^10.0.0",
+    "etl": "^0.6.12",
+    "got": "^11.8.3",
     "node-stream-zip": "^1.15.0",
-    "superagent": "^6.1.0"
+    "stream-json": "^1.7.3",
+    "superagent": "^6.1.0",
+    "unzipper": "^0.10.11"
   }
 }

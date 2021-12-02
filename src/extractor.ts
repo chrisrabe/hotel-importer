@@ -1,7 +1,6 @@
 import * as superagent from 'superagent';
 import fs from 'fs';
 import StreamZip from 'node-stream-zip';
-import { rejects } from 'assert';
 
 interface DownloadOptions {
   url: string;
@@ -22,6 +21,27 @@ const unzipFile = async (filename: string): Promise<string> => {
     });
   });
 };
+
+export const getAuthenticatedUrlExtractor =
+  (cookie: string) =>
+  (options: DownloadOptions): Promise<string> => {
+    const { url, filename, path } = options;
+    console.log('Extracting file URL path', options);
+    const time = `Time taken to extract download URL from ${url}`;
+    console.time(time);
+    return new Promise<string>((resolve, reject) => {
+      superagent
+        .get(url)
+        .set('Cookie', cookie)
+        .then((res) => {
+          const jsonResponse = JSON.parse(res.text);
+          const urlToDownload = jsonResponse[path];
+          console.timeEnd(time);
+          resolve(urlToDownload);
+        })
+        .catch(reject);
+    });
+  };
 
 export const getAuthenticatedDownloader =
   (cookie: string) =>

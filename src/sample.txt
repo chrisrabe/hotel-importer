@@ -1,0 +1,23 @@
+
+  const downloadRequests: Promise<string>[] = [
+    authenticatedDownload({
+      url: `${GMX_MAPPING_URL}/LatestMapping`,
+      filename: 'result.json',
+      path: 'resultJsonUrl',
+    }),
+    authenticatedDownload({
+      url: `${GMX_MAPPING_URL}/Descriptions`,
+      filename: 'hotel-descriptions',
+      path: 'downloadUrl',
+    }),
+    authenticatedDownload({
+      url: `${GMX_MAPPING_URL}/Photos`,
+      filename: 'hotel-images',
+      path: 'downloadUrl',
+    }),
+    authenticatedDownload({
+      url: `${GMX_MAPPING_URL}/Facilities`,
+      filename: 'hotel-facilities',
+      path: 'downloadUrl',
+    }),
+  ];

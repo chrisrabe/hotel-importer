@@ -1,8 +1,12 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { loginToGimmonix } from './auth';
-import { getAuthenticatedDownloader } from './extractor';
+import { getAuthenticatedUrlExtractor } from './extractor';
 import fs from 'fs';
+import got from 'got';
+import * as readline from 'readline';
+import unzip from 'unzipper';
+import stream from 'stream';
 
 export const GMX_MAPPING_URL = 'https://live.mapping.works/Mapping';
 
@@ -13,34 +17,59 @@ const importGMXFiles = async () => {
   }
 
   const cookie = await loginToGimmonix();
-  const authenticatedDownload = getAuthenticatedDownloader(cookie);
+  const authenticatedDownload = getAuthenticatedUrlExtractor(cookie);
+  const mappingDownloadUrl = await authenticatedDownload({
+    url: `${GMX_MAPPING_URL}/LatestMapping`,
+    filename: 'result.json',
+    path: 'resultJsonUrl',
+  });
 
-  const allFilesBenchmark = 'Time taken to download all files';
-  console.time(allFilesBenchmark);
-  const downloadRequests: Promise<string>[] = [
-    authenticatedDownload({
-      url: `${GMX_MAPPING_URL}/LatestMapping`,
-      filename: 'result.json',
-      path: 'resultJsonUrl',
-    }),
-    authenticatedDownload({
-      url: `${GMX_MAPPING_URL}/Descriptions`,
-      filename: 'hotel-descriptions',
-      path: 'downloadUrl',
-    }),
-    authenticatedDownload({
-      url: `${GMX_MAPPING_URL}/Photos`,
-      filename: 'hotel-images',
-      path: 'downloadUrl',
-    }),
-    authenticatedDownload({
-      url: `${GMX_MAPPING_URL}/Facilities`,
-      filename: 'hotel-facilities',
-      path: 'downloadUrl',
-    }),
-  ];
-  await Promise.all(downloadRequests);
-  console.timeEnd(allFilesBenchmark);
+  const time = 'Time taken to extract from zip';
+  console.time(time);
+
+  const readDownloadUrl = new Promise((resolve) => {
+    (async () => {
+      got
+        .stream(mappingDownloadUrl)
+        .pipe(unzip.Parse())
+        .pipe(
+          new stream.Transform({
+            objectMode: true,
+            transform: (entry, e, cb) => {
+              const fileName = entry.path;
+              const ignored = ['[', ']'];
+              let constructedObj: string[] = [];
+              if (fileName === 'Confident.json') {
+                const lineReader = readline.createInterface({
+                  input: entry,
+                });
+                lineReader.on('line', (line) => {
+                  const trimmedLine = line.trim();
+                  if (!ignored.includes(trimmedLine)) {
+                    if (trimmedLine === '}' || trimmedLine === '},') {
+                      constructedObj.push('}');
+                      const jsonObj = JSON.parse(constructedObj.join(''));
+                      constructedObj = [];
+                    } else {
+                      constructedObj.push(trimmedLine);
+                    }
+                  }
+                });
+                lineReader.on('close', () => {
+                  resolve('Done');
+                });
+              } else {
+                entry.autodrain();
+              }
+              cb();
+            },
+          })
+        );
+    })();
+  });
+  await readDownloadUrl;
+
+  console.timeEnd(time);
 };
 
 importGMXFiles().then();
