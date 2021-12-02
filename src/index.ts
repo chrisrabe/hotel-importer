@@ -29,11 +29,17 @@ const importGMXFiles = async () => {
   const time = 'Time taken to extract from zip';
   console.time(time);
 
+  const allHotels: Record<string, any> = {};
+
   const readDownloadUrl = new Promise((resolve) => {
     (async () => {
-      await createUnzipStream(mappingDownloadUrl, 'Confident.json', (entry) =>
-        transformEntryToJson(entry, () => resolve('Done'))
-      );
+      await createUnzipStream(mappingDownloadUrl, 'Confident.json', (entry) => {
+        const onComplete = () => resolve('Done');
+        const onEntry = (record: Record<string, any>) => {
+          allHotels[record.HotelId] = record;
+        };
+        transformEntryToJson(entry, onEntry, onComplete);
+      });
     })();
   });
 

@@ -1,6 +1,16 @@
 import readline from 'readline';
 
-export const transformEntryToJson = (entry: any, onComplete: () => void) => {
+type TransformFunction = (
+  entry: any,
+  onData: (data: Record<string, any>) => void,
+  onComplete: () => void
+) => void;
+
+export const transformEntryToJson: TransformFunction = (
+  entry,
+  onData,
+  onComplete
+) => {
   const ignored = ['[', ']'];
   let constructedObj: string[] = [];
   const lineReader = readline.createInterface({
@@ -13,6 +23,7 @@ export const transformEntryToJson = (entry: any, onComplete: () => void) => {
         constructedObj.push('}');
         const jsonObj = JSON.parse(constructedObj.join(''));
         constructedObj = [];
+        onData(jsonObj);
       } else {
         constructedObj.push(trimmedLine);
       }
