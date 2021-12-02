@@ -5,11 +5,14 @@ import stream from 'stream';
 export const createUnzipStream = async (
   remoteUrl: string,
   expectedFile: string,
-  onEntry: (entry: any) => void
+  onEntry: (entry: any) => void,
 ) => {
   got
     .stream(remoteUrl)
-    .pipe(Parse())
+    .on('error', (e) => {
+      throw e;
+    })
+    .pipe(Parse().on('error', () => ({})))
     .pipe(
       new stream.Transform({
         objectMode: true,
