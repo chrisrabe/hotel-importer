@@ -1,9 +1,10 @@
 import * as superagent from 'superagent';
+import { GMX_MAPPING_URL } from './index';
 
 export const loginToGimmonix = async (): Promise<string> => {
   const username = process.env.GMX_USER;
   const password = process.env.GMX_PASSWORD;
-  const url = 'https://live.mapping.works/Mapping/ApiLogin';
+  const url = `${GMX_MAPPING_URL}/ApiLogin`;
   const body = {
     Username: username,
     Password: password,
