@@ -5,7 +5,7 @@ import stream from 'stream';
 export const createUnzipStream = async (
   remoteUrl: string,
   expectedFile: string,
-  onEntry: (entry: any) => void,
+  onEntry: (entry: any) => void
 ) => {
   got
     .stream(remoteUrl)

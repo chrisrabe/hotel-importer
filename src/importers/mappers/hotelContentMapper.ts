@@ -1,5 +1,5 @@
-import { GMXHotelData } from '../types/gmxTypes';
-import { HotelContent } from '../types/elasticTypes';
+import { GMXHotelData } from '../../types/gmxTypes';
+import { HotelContent } from '../../types/elasticTypes';
 import { MapperFunction } from './index';
 
 export const mapGMXHotelDataToHotelContent: MapperFunction<
