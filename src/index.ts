@@ -17,13 +17,13 @@ const importGMXFiles = async () => {
 
   await importHotelContent(cookie);
 
-  // const importAttributes: Promise<unknown>[] = [
-  //   importHotelFacilities(cookie),
-  //   importHotelDescription(cookie),
-  //   importHotelImages(cookie),
-  // ];
-  //
-  // await Promise.all(importAttributes);
+  const importAttributes: Promise<unknown>[] = [
+    importHotelFacilities(cookie),
+    importHotelDescription(cookie),
+    importHotelImages(cookie),
+  ];
+
+  await Promise.all(importAttributes);
 
   console.timeEnd(time);
 };
