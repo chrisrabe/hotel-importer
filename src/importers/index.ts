@@ -6,11 +6,12 @@ import {
 } from '../client';
 import { createUnzipStream } from './stream';
 import {
-  mapGMXDescriptionToHotelDescription,
-  mapGMXFacilityToHotelFacility,
-  mapGMXHotelDataToHotelContent,
-  mapGMXImageToHotelImage,
-  MapperFunction,
+  BaseMapper,
+  getDescriptionMapper,
+  getFacilitiesMapper,
+  getHotelMapper,
+  getImageMapper,
+  Payload,
 } from './mappers';
 import { parseCsv, parseJson, TransformFunction } from './parsers';
 import {
@@ -32,34 +33,34 @@ export const importHotelContent = (cookie: string) =>
   importData<GMXHotelData, HotelContent>(
     cookie,
     'Confident.json',
-    mapGMXHotelDataToHotelContent,
+    getHotelMapper(),
     parseJson,
     getHotelContentDownloadUrl
   );
 
 export const importHotelDescription = (cookie: string) =>
-  importData<GMXHotelDescription, HotelDescription>(
+  importData<GMXHotelDescription, Payload<HotelDescription>>(
     cookie,
     'D_en.csv',
-    mapGMXDescriptionToHotelDescription,
+    getDescriptionMapper(),
     parseCsv,
     getDescriptionsDownloadUrl
   );
 
 export const importHotelFacilities = (cookie: string) =>
-  importData<GMXHotelFacility, HotelFacility>(
+  importData<GMXHotelFacility, Payload<HotelFacility>>(
     cookie,
     'F.csv',
-    mapGMXFacilityToHotelFacility,
+    getFacilitiesMapper(),
     parseCsv,
     getFacilityDownloadUrl
   );
 
 export const importHotelImages = (cookie: string) =>
-  importData<GMXHotelImage, HotelImage>(
+  importData<GMXHotelImage, Payload<HotelImage>>(
     cookie,
     'I.csv',
-    mapGMXImageToHotelImage,
+    getImageMapper(),
     parseCsv,
     getImagesDownloadUrl
   );
@@ -67,26 +68,29 @@ export const importHotelImages = (cookie: string) =>
 const importData = <Input, Output>(
   cookie: string,
   filename: string,
-  mapper: MapperFunction<Input, Output>,
+  mapper: BaseMapper<Input, Output>,
   parse: TransformFunction,
   getDownloadUrl: (cookie: string) => Promise<string>
 ) =>
   new Promise((resolve) => {
     let collection: Output[] = [];
+    mapper.setEmitter((output: Output) => collection.push(output));
     (async () => {
       const timer = `Time taken to process all ${filename}`;
       console.time(timer);
       const downloadUrl = await getDownloadUrl(cookie);
       const onComplete = () => {
         console.timeEnd(timer);
+        if (collection.length > 0) {
+          // flush
+        }
         resolve('Done');
       };
       await createUnzipStream(downloadUrl, filename, (entry) => {
         const onEntry = (record: any) => {
-          const item = mapper(record);
-          collection.push(item);
+          mapper.map(record);
           if (collection.length === MAX_NUM_ITEMS) {
-            // flush
+            // process
             collection = [];
           }
         };
