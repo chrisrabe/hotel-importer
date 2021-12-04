@@ -6,7 +6,7 @@ type TransformFunction = (
   onComplete: () => void
 ) => void;
 
-export const transformEntryToJson: TransformFunction = (
+export const parseJson: TransformFunction = (
   entry,
   onData,
   onComplete
@@ -32,7 +32,7 @@ export const transformEntryToJson: TransformFunction = (
   lineReader.on('close', onComplete);
 };
 
-export const transformEntryToCSV: TransformFunction = (
+export const parseCsv: TransformFunction = (
   entry,
   onData,
   onComplete
