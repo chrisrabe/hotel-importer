@@ -1,6 +1,6 @@
 import readline from 'readline';
 
-type TransformFunction = (
+export type TransformFunction = (
   entry: any,
   onData: (data: any) => void,
   onComplete: () => void
