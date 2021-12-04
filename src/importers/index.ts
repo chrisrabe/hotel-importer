@@ -1,9 +1,30 @@
-import { getHotelContentDownloadUrl } from '../client';
+import {
+  getDescriptionsDownloadUrl,
+  getFacilityDownloadUrl,
+  getHotelContentDownloadUrl,
+  getImagesDownloadUrl,
+} from '../client';
 import { createUnzipStream } from './stream';
-import { mapGMXHotelDataToHotelContent, MapperFunction } from './mappers';
-import { parseJson, TransformFunction } from './parsers';
-import { GMXHotelData } from '../types/gmxTypes';
-import { HotelContent } from '../types/elasticTypes';
+import {
+  mapGMXDescriptionToHotelDescription,
+  mapGMXFacilityToHotelFacility,
+  mapGMXHotelDataToHotelContent,
+  mapGMXImageToHotelImage,
+  MapperFunction,
+} from './mappers';
+import { parseCsv, parseJson, TransformFunction } from './parsers';
+import {
+  GMXHotelData,
+  GMXHotelDescription,
+  GMXHotelFacility,
+  GMXHotelImage,
+} from '../types/gmxTypes';
+import {
+  HotelContent,
+  HotelDescription,
+  HotelFacility,
+  HotelImage,
+} from '../types/elasticTypes';
 
 const MAX_NUM_ITEMS = 1000;
 
@@ -14,6 +35,33 @@ export const importHotelContent = (cookie: string) =>
     mapGMXHotelDataToHotelContent,
     parseJson,
     getHotelContentDownloadUrl
+  );
+
+export const importHotelDescription = (cookie: string) =>
+  importData<GMXHotelDescription, HotelDescription>(
+    cookie,
+    'D_en.csv',
+    mapGMXDescriptionToHotelDescription,
+    parseCsv,
+    getDescriptionsDownloadUrl
+  );
+
+export const importHotelFacilities = (cookie: string) =>
+  importData<GMXHotelFacility, HotelFacility>(
+    cookie,
+    'F.csv',
+    mapGMXFacilityToHotelFacility,
+    parseCsv,
+    getFacilityDownloadUrl
+  );
+
+export const importHotelImages = (cookie: string) =>
+  importData<GMXHotelImage, HotelImage>(
+    cookie,
+    'I.csv',
+    mapGMXImageToHotelImage,
+    parseCsv,
+    getImagesDownloadUrl
   );
 
 const importData = <Input, Output>(
@@ -46,21 +94,3 @@ const importData = <Input, Output>(
       });
     })();
   });
-
-//     return new Promise((resolve) => {
-//       (async () => {
-//         const csvTime = `Time taken to process ${params.id}`;
-//         console.time(csvTime);
-//         const csvDownloadUrl = await authenticatedDownload({
-//           url: params.url,
-//           path: params.path,
-//         });
-//         const onComplete = () => {
-//           console.timeEnd(csvTime);
-//           resolve('Done');
-//         };
-//         await createUnzipStream(csvDownloadUrl, params.filename, (entry) => {
-//           transformEntryToCSV(entry, params.onEntry, onComplete);
-//         });
-//       })();
-//     });
