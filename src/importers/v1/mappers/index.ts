@@ -1,16 +1,16 @@
-import BaseMapper, { Emitter } from './generic/baseMapper';
+import BaseMapper from './generic/baseMapper';
 import {
   GMXHotelData,
   GMXHotelDescription,
   GMXHotelFacility,
   GMXHotelImage,
-} from '../../types/gmxTypes';
+} from '../../../types/gmxTypes';
 import {
   HotelContent,
   HotelDescription,
   HotelFacility,
   HotelImage,
-} from '../../types/elasticTypes';
+} from '../../../types/elasticTypes';
 import Mapper from './generic/mapper';
 import {
   mapGMXDescriptionToHotelDescription,

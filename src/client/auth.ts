@@ -1,5 +1,5 @@
 import * as superagent from 'superagent';
-import { GMX_MAPPING_URL } from '../index';
+import { GMX_MAPPING_URL } from './index';
 
 export const loginToGimmonix = async (): Promise<string> => {
   const username = process.env.GMX_USER;

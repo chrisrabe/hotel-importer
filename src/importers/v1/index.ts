@@ -3,7 +3,7 @@ import {
   getFacilityDownloadUrl,
   getHotelContentDownloadUrl,
   getImagesDownloadUrl,
-} from '../client';
+} from '../../client';
 import { createUnzipStream } from './stream';
 import {
   BaseMapper,
@@ -19,16 +19,16 @@ import {
   GMXHotelDescription,
   GMXHotelFacility,
   GMXHotelImage,
-} from '../types/gmxTypes';
+} from '../../types/gmxTypes';
 import {
   HotelContent,
   HotelDescription,
   HotelFacility,
   HotelImage,
-} from '../types/elasticTypes';
-import { Loader } from '../index';
+} from '../../types/elasticTypes';
 
 const MAX_NUM_ITEMS = 1000;
+export type Loader<T> = (payload: T[]) => Promise<void>;
 
 export const importHotelContent = (
   cookie: string,
