@@ -26,43 +26,61 @@ import {
   HotelFacility,
   HotelImage,
 } from '../types/elasticTypes';
+import { Loader } from '../index';
 
 const MAX_NUM_ITEMS = 1000;
 
-export const importHotelContent = (cookie: string) =>
+export const importHotelContent = (
+  cookie: string,
+  loader: Loader<HotelContent>
+) =>
   importData<GMXHotelData, HotelContent>(
     cookie,
     'Confident.json',
     getHotelMapper(),
     parseJson,
-    getHotelContentDownloadUrl
+    getHotelContentDownloadUrl,
+    loader
   );
 
-export const importHotelDescription = (cookie: string) =>
+export const importHotelDescription = (
+  cookie: string,
+  loader: Loader<Payload<HotelDescription>>
+) =>
   importData<GMXHotelDescription, Payload<HotelDescription>>(
     cookie,
     'D_en.csv',
     getDescriptionMapper(),
     parseCsv,
-    getDescriptionsDownloadUrl
+    getDescriptionsDownloadUrl,
+    loader
   );
 
-export const importHotelFacilities = (cookie: string) =>
+export const importHotelFacilities = (
+  cookie: string,
+  loader: Loader<Payload<HotelFacility>>
+) =>
   importData<GMXHotelFacility, Payload<HotelFacility>>(
     cookie,
     'F.csv',
     getFacilitiesMapper(),
     parseCsv,
-    getFacilityDownloadUrl
+    getFacilityDownloadUrl,
+    loader
   );
 
-export const importHotelImages = (cookie: string) =>
+export const importHotelImages = (
+  cookie: string,
+  loader: Loader<Payload<HotelImage>>
+) =>
   importData<GMXHotelImage, Payload<HotelImage>>(
     cookie,
     'I.csv',
     getImageMapper(),
     parseCsv,
-    getImagesDownloadUrl
+    getImagesDownloadUrl,
+    loader,
+    MAX_NUM_ITEMS / 2
   );
 
 const importData = <Input, Output>(
@@ -70,7 +88,9 @@ const importData = <Input, Output>(
   filename: string,
   mapper: BaseMapper<Input, Output>,
   parse: TransformFunction,
-  getDownloadUrl: (cookie: string) => Promise<string>
+  getDownloadUrl: (cookie: string) => Promise<string>,
+  loader: Loader<Output>,
+  maxItems = MAX_NUM_ITEMS
 ) =>
   new Promise((resolve) => {
     let collection: Output[] = [];
@@ -82,15 +102,16 @@ const importData = <Input, Output>(
       const onComplete = () => {
         console.timeEnd(timer);
         if (collection.length > 0) {
-          // flush
+          loader(collection).then();
+          collection = [];
         }
         resolve('Done');
       };
       await createUnzipStream(downloadUrl, filename, (entry) => {
         const onEntry = (record: any) => {
           mapper.map(record);
-          if (collection.length === MAX_NUM_ITEMS) {
-            // process
+          if (collection.length === maxItems) {
+            loader(collection).then();
             collection = [];
           }
         };

@@ -9,9 +9,6 @@ export const createUnzipStream = async (
 ) => {
   got
     .stream(remoteUrl)
-    .on('error', (e) => {
-      throw e;
-    })
     .pipe(Parse().on('error', () => ({})))
     .pipe(
       new stream.Transform({
