@@ -15,6 +15,9 @@
     "@types/dotenv": "^8.2.0",
     "@types/got": "^9.6.12",
     "@types/node": "^16.11.11",
+    "@types/stdout-stream": "^1.4.0",
+    "@types/stream-chain": "^2.0.1",
+    "@types/stream-json": "^1.7.1",
     "@types/superagent": "^4.1.13",
     "@types/unzipper": "^0.10.4",
     "@typescript-eslint/eslint-plugin": "^5.5.0",
@@ -32,8 +35,13 @@
   "dependencies": {
     "@elastic/elasticsearch": "^7.15.0",
     "dotenv": "^10.0.0",
+    "etl": "^0.6.12",
     "got": "^11.8.3",
+    "stdout-stream": "^1.4.1",
+    "stream-chain": "^2.2.4",
+    "stream-json": "^1.7.3",
     "superagent": "^6.1.0",
-    "unzipper": "^0.10.11"
+    "unzipper": "^0.10.11",
+    "util": "^0.12.4"
   }
 }
