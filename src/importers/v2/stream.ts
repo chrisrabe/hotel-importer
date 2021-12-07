@@ -6,7 +6,7 @@ import { parser } from 'stream-json';
 import { streamArray } from 'stream-json/streamers/StreamArray';
 import { ELASTIC_INDEX, getElasticClient } from '../../elastic/client';
 import { createIndex, generateIndexName } from '../../elastic/actions';
-import { mapGMXHotelDataToHotelContent } from '../v1/mappers/mapperFunctions';
+import { hotelContentMapper } from './transforms/mappers';
 
 export const createUnzipStream = async (
   remoteUrl: string,
@@ -20,17 +20,19 @@ export const createUnzipStream = async (
   const pipeChain = chain([
     parser().on('error', () => ({})),
     streamArray(),
-    (data: any) => mapGMXHotelDataToHotelContent(data.value),
+    hotelContentMapper(),
     etl.collect(1000),
     etl.elastic.index(client, indexName, null, { concurrency: 2 }),
   ]);
 
   got
     .stream(remoteUrl)
-    .on('downloadProgress', ({ transferred, total }) => {
+    .on('downloadProgress', ({ transferred, total, percent }) => {
       if (transferred === total) {
         onClose();
       }
+      const percentage = (percent * 100).toFixed(2);
+      console.error(`progress: ${transferred}/${total} (${percentage}%)`);
     })
     .pipe(Parse().on('error', () => ({})))
     .pipe(

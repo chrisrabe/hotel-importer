@@ -1,5 +1,5 @@
 import BaseMapper from './baseMapper';
-import { MapperFunction } from '../mapperFunctions';
+import { MapperFunction } from '../../../v2/transforms/mappers/mapperFunctions';
 
 class Mapper<Input, Output> extends BaseMapper<Input, Output> {
   mapper: MapperFunction<Input, Output>;

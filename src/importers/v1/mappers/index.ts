@@ -17,7 +17,7 @@ import {
   mapGMXFacilityToHotelFacility,
   mapGMXHotelDataToHotelContent,
   mapGMXImageToHotelImage,
-} from './mapperFunctions';
+} from '../../v2/transforms/mappers/mapperFunctions';
 import AttributeCollector, { Payload } from './generic/attributeCollector';
 
 export { default as BaseMapper } from './generic/baseMapper';

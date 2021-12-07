@@ -1,4 +1,4 @@
-import { MapperFunction } from '../mapperFunctions';
+import { MapperFunction } from '../../../v2/transforms/mappers/mapperFunctions';
 import BaseMapper from './baseMapper';
 
 export type Payload<T> = { _id: any; [x: string]: T[] };
