@@ -4,41 +4,55 @@ const etl = require('etl');
 import { chain } from 'stream-chain';
 import { parser } from 'stream-json';
 import { streamArray } from 'stream-json/streamers/StreamArray';
-import { ELASTIC_INDEX, getElasticClient } from '../../elastic/client';
-import { createIndex, generateIndexName } from '../../elastic/actions';
-import { hotelContentMapper } from './transforms/mappers';
+import { Transform } from 'stream';
+import Papa from 'papaparse';
 
-export const createUnzipStream = async (
-  remoteUrl: string,
-  expectedFile: string,
-  onClose: () => void
-) => {
-  const client = await getElasticClient();
-  const indexName = generateIndexName(ELASTIC_INDEX);
-  console.log(indexName);
-  await createIndex(client, indexName);
-  const pipeChain = chain([
+const chainFns = {
+  JSON: (mapper: Transform) => [
     parser().on('error', () => ({})),
     streamArray(),
-    hotelContentMapper(),
+    mapper,
+  ],
+  CSV: (collector: Transform) => [
+    Papa.parse(Papa.NODE_STREAM_INPUT, {
+      fastMode: true,
+      delimiter: '|',
+      header: true,
+    }),
+    collector,
+  ],
+};
+
+export type FileType = keyof typeof chainFns;
+
+export const createUnzipStream = async <L>(
+  remoteUrl: string,
+  expectedFile: string,
+  fileType: FileType,
+  transformer: Transform,
+  loader: L,
+  onClose: () => void
+) => {
+  const pipeline = chain([
+    ...chainFns[fileType](transformer),
     etl.collect(1000),
-    etl.elastic.index(client, indexName, null, { concurrency: 2 }),
+    loader,
   ]);
 
   got
     .stream(remoteUrl)
-    .on('downloadProgress', ({ transferred, total, percent }) => {
+    .on('downloadProgress', ({ transferred, total }) => {
       if (transferred === total) {
         onClose();
       }
-      const percentage = (percent * 100).toFixed(2);
-      console.error(`progress: ${transferred}/${total} (${percentage}%)`);
+      // const percentage = (percent * 100).toFixed(2);
+      // console.error(`progress: ${transferred}/${total} (${percentage}%)`);
     })
     .pipe(Parse().on('error', () => ({})))
     .pipe(
       etl.map(async (entry: any) => {
         if (entry.path === expectedFile) {
-          return entry.pipe(pipeChain);
+          return entry.pipe(pipeline);
         } else {
           return entry.autodrain();
         }

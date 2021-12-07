@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import { Client } from '@elastic/elasticsearch';
 
 const ELASTIC_HOST = process.env.ELASTIC_HOST || '';
@@ -18,5 +20,6 @@ const createESClient = (host: string, username: string, password: string) => {
 
 export const getElasticClient = () => {
   const nodeUrl = `${ELASTIC_PROTOCOl}://${ELASTIC_HOST}`;
+  console.log(nodeUrl);
   return createESClient(nodeUrl, ELASTIC_USER, ELASTIC_PASS);
 };
