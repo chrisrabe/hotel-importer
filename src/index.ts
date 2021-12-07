@@ -1,12 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { loginToGimmonix } from './client';
-import {
-  importHotelContent,
-  importHotelDescription,
-  importHotelFacilities,
-  importHotelImages,
-} from './importer';
+import { importGMXHotels } from './importer';
 import { elasticLoader, ElasticMethod } from './importer/transforms/loader';
 import { ELASTIC_INDEX, getElasticClient } from './elastic/client';
 import { createIndex, generateIndexName } from './elastic/actions';
@@ -23,21 +18,7 @@ const importGMXFiles = async () => {
   const indexLoader = elasticLoader(ElasticMethod.Index, client, indexName);
   const updateLoader = elasticLoader(ElasticMethod.Update, client, indexName);
 
-  const time = 'Time taken to complete all download operations';
-
-  console.time(time);
-
-  await importHotelContent(cookie, indexLoader);
-
-  const updateRequests: Promise<string>[] = [
-    importHotelFacilities(cookie, updateLoader),
-    importHotelDescription(cookie, updateLoader),
-    importHotelImages(cookie, updateLoader),
-  ];
-
-  await Promise.all(updateRequests);
-
-  console.timeEnd(time);
+  await importGMXHotels(cookie, indexLoader, updateLoader);
 };
 
 importGMXFiles().then();
