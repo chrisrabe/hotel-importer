@@ -1,7 +1,7 @@
 import { getAuthenticatedUrlExtractor } from './urlExtractor';
-import { GMX_MAPPING_URL } from '../index';
 
 export { loginToGimmonix } from './auth';
+export const GMX_MAPPING_URL = 'https://live.mapping.works/Mapping';
 
 export const getHotelContentDownloadUrl = (cookie: string) => {
   const getUrl = getAuthenticatedUrlExtractor(cookie);

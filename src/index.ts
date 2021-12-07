@@ -6,65 +6,38 @@ import {
   importHotelDescription,
   importHotelFacilities,
   importHotelImages,
-} from './importers';
-import { getElasticClient } from './elastic/client';
-import {
-  bulkPushElastic,
-  bulkUpdateElastic,
-  createIndex,
-  generateIndexName,
-} from './elastic/actions';
-import { Payload } from './importers/mappers';
-import { HotelContent, HotelFacility } from './types/elasticTypes';
-
-export const GMX_MAPPING_URL = 'https://live.mapping.works/Mapping';
-const ELASTIC_INDEX = process.env.ELASTIC_INDEX ?? 'hotel-data';
-
-export type Loader<T> = (payload: T[]) => Promise<void>;
+} from './importer';
+import { elasticLoader, ElasticMethod } from './importer/transforms/loader';
+import { ELASTIC_INDEX, getElasticClient } from './elastic/client';
+import { createIndex, generateIndexName } from './elastic/actions';
 
 const importGMXFiles = async () => {
-  const client = getElasticClient();
   const cookie = await loginToGimmonix();
+  const client = getElasticClient();
 
   const indexName = generateIndexName(ELASTIC_INDEX);
   await createIndex(client, indexName);
 
-  console.log('Created index', indexName);
+  console.log('Uploading to index', indexName);
 
-  const createElasticInserter =
-    <T>(key: keyof T): Loader<T> =>
-    async (payload) => {
-      await bulkPushElastic(client, indexName, payload, key);
-    };
-
-  const createElasticUpdater =
-    <T>(): Loader<Payload<T>> =>
-    async (payload) => {
-      await bulkUpdateElastic(client, indexName, payload);
-    };
+  const indexLoader = elasticLoader(ElasticMethod.Index, client, indexName);
+  const updateLoader = elasticLoader(ElasticMethod.Update, client, indexName);
 
   const time = 'Time taken to complete all download operations';
+
   console.time(time);
 
-  try {
-    await importHotelContent(
-      cookie,
-      createElasticInserter<HotelContent>('_id')
-    );
+  await importHotelContent(cookie, indexLoader);
 
-    const importAttributes: Promise<unknown>[] = [
-      importHotelFacilities(cookie, createElasticUpdater()),
-      importHotelDescription(cookie, createElasticUpdater()),
-      importHotelImages(cookie, createElasticUpdater()),
-    ];
+  const updateRequests: Promise<string>[] = [
+    importHotelFacilities(cookie, updateLoader),
+    importHotelDescription(cookie, updateLoader),
+    importHotelImages(cookie, updateLoader),
+  ];
 
-    await Promise.all(importAttributes);
-    console.timeEnd(time);
-  } catch (e) {
-    console.log(e);
-  } finally {
-    await client.close();
-  }
+  await Promise.all(updateRequests);
+
+  console.timeEnd(time);
 };
 
 importGMXFiles().then();

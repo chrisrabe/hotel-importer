@@ -1,33 +1,29 @@
-import BaseMapper, { Emitter } from './generic/baseMapper';
 import {
   GMXHotelData,
   GMXHotelDescription,
   GMXHotelFacility,
   GMXHotelImage,
-} from '../../types/gmxTypes';
+} from '../../../types/gmxTypes';
 import {
   HotelContent,
   HotelDescription,
   HotelFacility,
   HotelImage,
-} from '../../types/elasticTypes';
-import Mapper from './generic/mapper';
+} from '../../../types/elasticTypes';
 import {
   mapGMXDescriptionToHotelDescription,
   mapGMXFacilityToHotelFacility,
   mapGMXHotelDataToHotelContent,
   mapGMXImageToHotelImage,
 } from './mapperFunctions';
-import AttributeCollector, { Payload } from './generic/attributeCollector';
+import Mapper from './generic/mapper';
+import AttributeCollector from './generic/attributeCollector';
 
-export { default as BaseMapper } from './generic/baseMapper';
-export { Payload } from './generic/attributeCollector';
-
-export const getHotelMapper = (): BaseMapper<GMXHotelData, HotelContent> => {
+export const hotelContentMapper = (): Mapper<GMXHotelData, HotelContent> => {
   return new Mapper<GMXHotelData, HotelContent>(mapGMXHotelDataToHotelContent);
 };
 
-export const getDescriptionMapper = (): AttributeCollector<
+export const descriptionCollector = (): AttributeCollector<
   GMXHotelDescription,
   HotelDescription
 > => {
@@ -38,18 +34,7 @@ export const getDescriptionMapper = (): AttributeCollector<
   );
 };
 
-export const getImageMapper = (): AttributeCollector<
-  GMXHotelImage,
-  HotelImage
-> => {
-  return new AttributeCollector<GMXHotelImage, HotelImage>(
-    'HotelId',
-    'images',
-    mapGMXImageToHotelImage
-  );
-};
-
-export const getFacilitiesMapper = (): AttributeCollector<
+export const facilityCollector = (): AttributeCollector<
   GMXHotelFacility,
   HotelFacility
 > => {
@@ -57,5 +42,16 @@ export const getFacilitiesMapper = (): AttributeCollector<
     'HotelId',
     'facilities',
     mapGMXFacilityToHotelFacility
+  );
+};
+
+export const imageCollector = (): AttributeCollector<
+  GMXHotelImage,
+  HotelImage
+> => {
+  return new AttributeCollector<GMXHotelImage, HotelImage>(
+    'HotelId',
+    'images',
+    mapGMXImageToHotelImage
   );
 };
