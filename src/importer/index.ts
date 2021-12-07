@@ -5,7 +5,7 @@ import {
   importHotelImages,
 } from './importer';
 
-export const importGMXHotels = async <L>(
+export const importer = async <L>(
   cookie: string,
   indexLoader: L,
   updateLoader: L
