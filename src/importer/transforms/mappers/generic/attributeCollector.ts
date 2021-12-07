@@ -1,4 +1,4 @@
-import { Transform, TransformCallback } from 'src/importer/stream';
+import { Transform, TransformCallback } from 'stream';
 import { MapperFunction } from '../mapperFunctions';
 
 class AttributeCollector<Input, Output> extends Transform {
@@ -25,7 +25,12 @@ class AttributeCollector<Input, Output> extends Transform {
     this.collection = [];
   }
 
-  _transform(chunk: Input, _: string, done: TransformCallback): void {
+  _transform(raw: any, _: string, done: TransformCallback): void {
+    const chunk: Input = Object.keys(raw).reduce((acc: any, key: any) => {
+      acc[key.trim()] = raw[key];
+      return acc;
+    }, {});
+
     const item = this.mapper(chunk);
 
     if (!item) {

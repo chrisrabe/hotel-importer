@@ -20,6 +20,5 @@ const createESClient = (host: string, username: string, password: string) => {
 
 export const getElasticClient = () => {
   const nodeUrl = `${ELASTIC_PROTOCOl}://${ELASTIC_HOST}`;
-  console.log(nodeUrl);
   return createESClient(nodeUrl, ELASTIC_USER, ELASTIC_PASS);
 };

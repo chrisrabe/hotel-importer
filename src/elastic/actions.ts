@@ -1,5 +1,6 @@
 import { Client } from '@elastic/elasticsearch';
-import { Payload } from '../importer/v1/mappers';
+
+type Payload<T> = { _id: any; [x: string]: T[] };
 
 export const bulkPushElastic = async <T>(
   client: Client,
