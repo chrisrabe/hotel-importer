@@ -38,8 +38,6 @@ const importGMXFiles = async () => {
   await Promise.all(updateRequests);
 
   console.timeEnd(time);
-
-  await client.close();
 };
 
 importGMXFiles().then();
