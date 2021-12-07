@@ -3,13 +3,13 @@ import {
   GMXHotelDescription,
   GMXHotelFacility,
   GMXHotelImage,
-} from '../../../../types/gmxTypes';
+} from '../../../types/gmxTypes';
 import {
   HotelContent,
   HotelDescription,
   HotelFacility,
   HotelImage,
-} from '../../../../types/elasticTypes';
+} from '../../../types/elasticTypes';
 import {
   mapGMXDescriptionToHotelDescription,
   mapGMXFacilityToHotelFacility,

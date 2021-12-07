@@ -4,7 +4,7 @@ const etl = require('etl');
 import { chain } from 'stream-chain';
 import { parser } from 'stream-json';
 import { streamArray } from 'stream-json/streamers/StreamArray';
-import { Transform } from 'stream';
+import { Transform } from 'src/importer/stream';
 import Papa from 'papaparse';
 
 const chainFns = {

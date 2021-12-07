@@ -1,4 +1,4 @@
-import { getHotelContentDownloadUrl } from '../../client';
+import { getHotelContentDownloadUrl } from '../client';
 import { createUnzipStream } from './stream';
 import { hotelContentMapper } from './transforms/mappers';
 

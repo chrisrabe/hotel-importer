@@ -1,4 +1,4 @@
-import { Transform, TransformCallback } from 'stream';
+import { Transform, TransformCallback } from 'src/importer/stream';
 import { MapperFunction } from '../mapperFunctions';
 
 class AttributeCollector<Input, Output> extends Transform {
