@@ -7,7 +7,7 @@ import { streamArray } from 'stream-json/streamers/StreamArray';
 import { Transform } from 'stream';
 import Papa from 'papaparse';
 
-const chainFns = {
+export const chainFns = {
   JSON: (mapper: Transform) => [
     parser().on('error', () => ({})),
     streamArray(),

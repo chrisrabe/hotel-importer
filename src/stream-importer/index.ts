@@ -11,8 +11,8 @@ export const importer = async <L>(
   updateLoader: L
 ) => {
   const timer = 'Time taken to complete all download operations';
-
   console.time(timer);
+
   await importHotelContent(cookie, indexLoader);
   const updateRequests: Promise<string>[] = [
     importHotelFacilities(cookie, updateLoader),
@@ -21,5 +21,6 @@ export const importer = async <L>(
   ];
 
   await Promise.all(updateRequests);
+
   console.timeEnd(timer);
 };
