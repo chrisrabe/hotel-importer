@@ -1,8 +1,8 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { loginToGimmonix } from './client';
-import { importer } from './importer';
-import { elasticLoader, ElasticMethod } from './importer/transforms/loader';
+import { importer } from './stream-importer';
+import { elasticLoader, ElasticMethod } from './stream-importer/transforms/loader';
 import { ELASTIC_INDEX, getElasticClient } from './elastic/client';
 import { createIndex, generateIndexName } from './elastic/actions';
 
