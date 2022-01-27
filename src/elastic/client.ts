@@ -15,6 +15,7 @@ const createESClient = (host: string, username: string, password: string) => {
       username,
       password,
     },
+    requestTimeout: 60000,
   });
 };
 

@@ -11,18 +11,22 @@ import {
 const etl = require('etl');
 
 export const importHotelContent = <L>(path: string, loader: L) => {
+  console.log('Uploading hotel content to elasticsearch...');
   return importFile(path, 'JSON', hotelContentMapper(), loader);
 };
 
 export const importHotelDescription = <L>(path: string, loader: L) => {
+  console.log('Uploading hotel description to elasticsearch...');
   return importFile(path, 'CSV', descriptionCollector(), loader);
 };
 
 export const importHotelFacilities = <L>(path: string, loader: L) => {
+  console.log('Uploading hotel facilities to elasticsearch...');
   return importFile(path, 'CSV', facilityCollector(), loader);
 };
 
 export const importHotelImages = <L>(path: string, loader: L) => {
+  console.log('Uploading hotel images to elasticsearch...');
   return importFile(path, 'CSV', imageCollector(), loader);
 };
 
@@ -30,7 +34,8 @@ const importFile = <L>(
   filePath: string,
   fileType: FileType,
   transformer: Transform,
-  loader: L
+  loader: L,
+  maxItems = 1000
 ) => {
   const timer = `Time to import ${filePath}`;
   console.time(timer);
@@ -38,7 +43,7 @@ const importFile = <L>(
     const pipeline = chain([
       fs.createReadStream(filePath),
       ...chainFns[fileType](transformer),
-      etl.collect(1000),
+      etl.collect(maxItems),
       loader,
     ]);
     let counter = 0;

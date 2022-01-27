@@ -14,9 +14,9 @@ interface RemoteFiles {
   facilities: string;
 }
 
-const TMP_DIRECTORY = './tmp';
+export const TMP_DIRECTORY = './tmp';
 
-const REMOTE_FILES: RemoteFiles = {
+export const REMOTE_FILES: RemoteFiles = {
   hotelContent: 'Confident.json',
   descriptions: 'D_en.csv',
   images: 'I.csv',
