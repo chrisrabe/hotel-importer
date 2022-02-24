@@ -1,5 +1,5 @@
 import got from 'got';
-import { Parse } from 'unzipper';
+import { Parse } from 'unzip-stream';
 import { Transform, TransformCallback } from 'stream';
 import fs from 'fs';
 
@@ -11,7 +11,11 @@ export const downloadFileFromStream = async (
   return new Promise((resolve) => {
     got
       .stream(remoteUrl)
-      .pipe(Parse().on('error', () => ({})))
+      .on('downloadProgress', ({ transferred, total, percent }) => {
+        const percentage = (percent * 100).toFixed(2);
+        console.error(`progress: ${transferred}/${total} (${percentage}%)`);
+      })
+      .pipe(Parse().on('error', (err) => console.log(err)))
       .pipe(
         new Transform({
           objectMode: true,
