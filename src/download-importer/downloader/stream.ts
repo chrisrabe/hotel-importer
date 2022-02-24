@@ -11,10 +11,10 @@ export const downloadFileFromStream = async (
   return new Promise((resolve) => {
     got
       .stream(remoteUrl)
-      .on('downloadProgress', ({ transferred, total, percent }) => {
-        const percentage = (percent * 100).toFixed(2);
-        console.error(`progress: ${transferred}/${total} (${percentage}%)`);
-      })
+      // .on('downloadProgress', ({ transferred, total, percent }) => {
+      //   const percentage = (percent * 100).toFixed(2);
+      //   console.error(`progress: ${transferred}/${total} (${percentage}%)`);
+      // })
       .pipe(Parse().on('error', (err) => console.log(err)))
       .pipe(
         new Transform({
