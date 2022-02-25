@@ -2,12 +2,12 @@ import dotenv from 'dotenv';
 dotenv.config();
 import { loginToGimmonix } from './client';
 import { importer } from './multi-importer';
-import {
-  elasticLoader,
-  ElasticMethod,
-} from './stream-importer/transforms/loader';
+// import {
+//   elasticLoader,
+//   ElasticMethod,
+// } from './stream-importer/transforms/loader';
 import { ELASTIC_INDEX, getElasticClient } from './elastic/client';
-import { createIndex, generateIndexName } from './elastic/actions';
+// import { createIndex, generateIndexName } from './elastic/actions';
 
 // const importGMXFiles = async () => {
 //   const cookie = await loginToGimmonix();
@@ -35,9 +35,9 @@ process
   .on('unhandledRejection', (reason, p) => {
     console.error(reason, 'Unhandled Rejection at Promise', p);
   })
-  .on('uncaughtException', err => {
+  .on('uncaughtException', (err) => {
     console.error(err, 'Uncaught Exception thrown');
     process.exit(1);
   });
 
-  multiImportGMXFiles().then();
+multiImportGMXFiles().then();
