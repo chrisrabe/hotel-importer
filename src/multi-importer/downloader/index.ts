@@ -35,7 +35,7 @@ export const downloadGMXFiles = async (
     downloadHotelContent(cookie),
     downloadHotelDescriptions(cookie),
     downloadHotelFacilities(cookie),
-    // downloadHotelImages(cookie),
+    downloadHotelImages(cookie),
   ]);
   console.timeEnd(timer);
   return {

@@ -25,6 +25,7 @@ export const mapGMXHotelDataToHotelContent: MapperFunction<
 
   return {
     _id: HotelId,
+    hotelId: HotelId,
     hotelName: DisplayName,
     images: [],
     facilities: [],

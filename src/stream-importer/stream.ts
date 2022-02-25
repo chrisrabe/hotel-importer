@@ -1,5 +1,5 @@
 import got from 'got';
-import { Parse } from 'unzipper';
+import { Parse } from 'unzip-stream';
 const etl = require('etl');
 import { chain } from 'stream-chain';
 import { parser } from 'stream-json';

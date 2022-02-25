@@ -3,10 +3,10 @@ import { Transform } from 'stream';
 import { chain } from 'stream-chain';
 import fs from 'fs';
 import {
-  descriptionCollector,
-  facilityCollector,
+  descriptionMapper,
+  facilityMapper,
   hotelContentMapper,
-  imageCollector,
+  imageMapper,
 } from '../stream-importer/transforms/mappers';
 const etl = require('etl');
 
@@ -17,20 +17,20 @@ export const importHotelContent = <L>(path: string, loader: L) => {
 
 export const importHotelDescription = <L>(path: string, loader: L) => {
   console.log('Uploading hotel description to elasticsearch...');
-  return importFile(path, 'CSV', descriptionCollector(), loader);
+  return importFile(path, 'CSV', descriptionMapper(), loader);
 };
 
 export const importHotelFacilities = <L>(path: string, loader: L) => {
   console.log('Uploading hotel facilities to elasticsearch...');
-  return importFile(path, 'CSV', facilityCollector(), loader);
+  return importFile(path, 'CSV', facilityMapper(), loader);
 };
 
 export const importHotelImages = <L>(path: string, loader: L) => {
   console.log('Uploading hotel images to elasticsearch...');
-  return importFile(path, 'CSV', imageCollector(), loader);
+  return importFile(path, 'CSV', imageMapper(), loader);
 };
 
-export const importFile = <L>(
+const importFile = <L>(
   filePath: string,
   fileType: FileType,
   transformer: Transform,
