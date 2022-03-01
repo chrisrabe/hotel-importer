@@ -17,17 +17,17 @@ export const importHotelContent = <L>(path: string, loader: L) => {
 
 export const importHotelDescription = <L>(path: string, loader: L) => {
   console.log('Uploading hotel description to elasticsearch...');
-  return importFile(path, 'CSV', descriptionMapper(), loader);
+  return importFile(path, 'CSV', descriptionMapper(), loader, 5000);
 };
 
 export const importHotelFacilities = <L>(path: string, loader: L) => {
   console.log('Uploading hotel facilities to elasticsearch...');
-  return importFile(path, 'CSV', facilityMapper(), loader);
+  return importFile(path, 'CSV', facilityMapper(), loader, 5000);
 };
 
 export const importHotelImages = <L>(path: string, loader: L) => {
   console.log('Uploading hotel images to elasticsearch...');
-  return importFile(path, 'CSV', imageMapper(), loader);
+  return importFile(path, 'CSV', imageMapper(), loader, 5000);
 };
 
 const importFile = <L>(
