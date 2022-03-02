@@ -17,7 +17,7 @@ import {
   mapGMXImageToHotelImage,
 } from './mapperFunctions';
 import Mapper from './generic/mapper';
-// import AttributeCollector from './generic/attributeCollector';
+import AttributeCollector from './generic/attributeCollector';
 
 export const hotelContentMapper = (): Mapper<GMXHotelData, HotelContent> => {
   return new Mapper<GMXHotelData, HotelContent>(mapGMXHotelDataToHotelContent);
@@ -27,52 +27,50 @@ export const descriptionMapper = (): Mapper<
   GMXHotelDescription,
   HotelDescription
 > => {
-  return new Mapper<GMXHotelDescription, HotelDescription>(mapGMXDescriptionToHotelDescription);
+  return new Mapper<GMXHotelDescription, HotelDescription>(
+    mapGMXDescriptionToHotelDescription
+  );
 };
 
-export const facilityMapper = (): Mapper<
-  GMXHotelFacility,
-  HotelFacility
-> => {
-  return new Mapper<GMXHotelFacility, HotelFacility>(mapGMXFacilityToHotelFacility);
+export const facilityMapper = (): Mapper<GMXHotelFacility, HotelFacility> => {
+  return new Mapper<GMXHotelFacility, HotelFacility>(
+    mapGMXFacilityToHotelFacility
+  );
 };
 
-export const imageMapper = (): Mapper<
-  GMXHotelImage,
-  HotelImage
-> => {
+export const imageMapper = (): Mapper<GMXHotelImage, HotelImage> => {
   return new Mapper<GMXHotelImage, HotelImage>(mapGMXImageToHotelImage);
 };
 
-// export const descriptionCollector = (): AttributeCollector<
-//   GMXHotelDescription,
-//   HotelDescription
-// > => {
-//   return new AttributeCollector<GMXHotelDescription, HotelDescription>(
-//     'HotelId',
-//     'descriptions',
-//     mapGMXDescriptionToHotelDescription
-//   );
-// };
+export const descriptionCollector = (): AttributeCollector<
+  GMXHotelDescription,
+  HotelDescription
+> => {
+  return new AttributeCollector<GMXHotelDescription, HotelDescription>(
+    'HotelId',
+    'descriptions',
+    mapGMXDescriptionToHotelDescription
+  );
+};
 
-// export const facilityCollector = (): AttributeCollector<
-//   GMXHotelFacility,
-//   HotelFacility
-// > => {
-//   return new AttributeCollector<GMXHotelFacility, HotelFacility>(
-//     'HotelId',
-//     'facilities',
-//     mapGMXFacilityToHotelFacility
-//   );
-// };
+export const facilityCollector = (): AttributeCollector<
+  GMXHotelFacility,
+  HotelFacility
+> => {
+  return new AttributeCollector<GMXHotelFacility, HotelFacility>(
+    'HotelId',
+    'facilities',
+    mapGMXFacilityToHotelFacility
+  );
+};
 
-// export const imageCollector = (): AttributeCollector<
-//   GMXHotelImage,
-//   HotelImage
-// > => {
-//   return new AttributeCollector<GMXHotelImage, HotelImage>(
-//     'HotelId',
-//     'images',
-//     mapGMXImageToHotelImage
-//   );
-// };
+export const imageCollector = (): AttributeCollector<
+  GMXHotelImage,
+  HotelImage
+> => {
+  return new AttributeCollector<GMXHotelImage, HotelImage>(
+    'HotelId',
+    'images',
+    mapGMXImageToHotelImage
+  );
+};
