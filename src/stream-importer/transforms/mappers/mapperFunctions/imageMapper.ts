@@ -6,9 +6,8 @@ export const mapGMXImageToHotelImage: MapperFunction<
   GMXHotelImage,
   HotelImage
 > = (data) => {
-  const { ImageUrl, Description, HotelId: hotelId } = data;
+  const { ImageUrl, Description } = data;
   return {
-    hotelId,
     url: ImageUrl,
     description: Description ?? '',
   };

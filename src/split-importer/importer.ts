@@ -68,7 +68,7 @@ const importers: Record<ImporterType, Importer> = {
   },
 };
 
-export const startImporter = async (
+export const importData = async (
   importerType: ImporterType,
   cookie: string,
   baseIndex: string,
@@ -79,6 +79,8 @@ export const startImporter = async (
 
   const indexName = generateIndexName(`${baseIndex}_${importerType}`);
   await createIndex(client, indexName);
+
+  console.log(`Pushing ${importerType} data to index:`, indexName);
 
   const indexLoader = elasticLoader(ElasticMethod.Index, client, indexName);
   const { expectedFile, fileType, transformer, maxItems } = importer.args;

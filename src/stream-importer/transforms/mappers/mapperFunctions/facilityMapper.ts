@@ -6,9 +6,8 @@ export const mapGMXFacilityToHotelFacility: MapperFunction<
   GMXHotelFacility,
   HotelFacility
 > = (data) => {
-  const { FacilityName, FacilityType: facilityType, HotelId: hotelId } = data;
+  const { FacilityName, FacilityType: facilityType } = data;
   return {
-    hotelId,
     type: getFacilityType(facilityType),
     description: FacilityName ?? '',
   };

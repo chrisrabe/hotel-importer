@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <div id="users"></div>
+    <script type="text/javascript">
+      const usersDiv = document.getElementById('users');
+      setInterval(() => {
+        fetch('/users').then(res => res.json()).then(data => {
+          console.log(data);
+          usersDiv.innerHTML = JSON.stringify(data);
+        })
+      }, 1000);
+    </script>
+  </body>
+</html>

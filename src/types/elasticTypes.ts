@@ -33,7 +33,6 @@ export type HotelContent = {
 };
 
 export type HotelImage = {
-  hotelId: string
   url: string;
   description: string;
 };
@@ -45,13 +44,11 @@ export enum HotelFacilityType {
 }
 
 export type HotelFacility = {
-  hotelId: string
   type: HotelFacilityType;
   description: string;
 };
 
 export type HotelDescription = {
-  hotelId: string
   language: string; // en
   title: string; // e.g. attractions
   detail: string;
