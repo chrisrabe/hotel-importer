@@ -15,27 +15,32 @@ export const streamData = async <L>(
   fileType: FileType,
   transformer: Transform,
   loader: L,
-  maxItems = 1000
+  maxItems = 1000,
+  debug = true
 ) => {
   const timer = `Time taken to download ${expectedFile}`;
   console.time(timer);
 
   const downloadStream = got.stream(remoteUrl); // input stream
 
-  downloadStream.on('downloadProgress', ({ transferred, total, percent }) => {
-    (async () => {
-      await axios.post('http://localhost:8080/status', {
-        file: expectedFile,
-        percent,
-        transferred,
-        total,
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-    })();
-  });
+  if (debug) {
+    downloadStream.on('downloadProgress', ({ transferred, total, percent }) => {
+      (async () => {
+        try {
+          await axios.post('http://localhost:8080/status', {
+            file: expectedFile,
+            percent,
+            transferred,
+            total,
+          }, {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+        } catch (e) {}
+      })();
+    });
+  }
 
   const filePipeline = chain([
     ...chainFns[fileType](transformer),
