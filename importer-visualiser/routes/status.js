@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-const data = [];
+const data = {};
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -9,8 +9,14 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function (req, res) {
-  const { body } = req;
-  data.push(body);
+  const { file, percent, transferred, total } = req.body;
+  if (file) {
+    data[file] = {
+      percent,
+      transferred,
+      total
+    }
+  }
   res.send("Success!");
 })
 

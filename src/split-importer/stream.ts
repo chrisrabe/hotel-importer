@@ -5,6 +5,7 @@ import stream, { Transform, TransformCallback } from 'stream';
 import { chain } from 'stream-chain';
 const etl = require('etl');
 import { FileType, chainFns } from '../stream-importer/stream';
+import axios from 'axios';
 
 const pipeline = promisify(stream.pipeline);
 
@@ -20,6 +21,21 @@ export const streamData = async <L>(
   console.time(timer);
 
   const downloadStream = got.stream(remoteUrl); // input stream
+
+  downloadStream.on('downloadProgress', ({ transferred, total, percent }) => {
+    (async () => {
+      await axios.post('http://localhost:8080/status', {
+        file: expectedFile,
+        percent,
+        transferred,
+        total,
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    })();
+  });
 
   const filePipeline = chain([
     ...chainFns[fileType](transformer),

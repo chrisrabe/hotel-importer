@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "@elastic/elasticsearch": "^7.15.0",
+    "axios": "^0.26.0",
     "dotenv": "^10.0.0",
     "etl": "^0.6.12",
     "got": "^11.8.3",
