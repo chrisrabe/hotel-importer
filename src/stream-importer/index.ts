@@ -14,7 +14,7 @@ export const importer = async <L>(
   console.time(timer);
 
   await importHotelContent(cookie, indexLoader);
-  const updateRequests: Promise<string>[] = [
+  const updateRequests: Promise<void>[] = [
     importHotelFacilities(cookie, updateLoader),
     importHotelDescription(cookie, updateLoader),
     importHotelImages(cookie, updateLoader),
