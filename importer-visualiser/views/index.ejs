@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <script type="text/javascript">
+      (function () {
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const rectHeight = 50;
+        const startX = 25;
+        const startHeight = 25;
+        const gap = 15;
+
+        const colors = {
+          green: '#33cc33',
+          black: '#282828'
+        }
+
+        window.addEventListener('resize', resizeCanvas, false);
+
+        function resizeCanvas() {
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+        }
+
+        function drawRect(x, y, width, height, color) {
+          ctx.fillStyle = color;
+          ctx.fillRect(x, y, width, height);
+          ctx.fillStyle = colors.black;
+        }
+
+        function drawText(x, y, text) {
+          ctx.font = '20px serif';
+          ctx.fillText(text, x, y);
+        }
+
+        resizeCanvas();
+
+        function clearCanvas() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        setInterval(() => {
+          fetch('/status').then(res => res.json()).then(progress => {
+            clearCanvas();
+            const files = Object.keys(progress);
+            const maxTotal = Math.max(...files.map(file => progress[file].total));
+            const scale = (canvas.width * 0.5) / maxTotal;
+
+            for (let i = 0 ; i < files.length; i++) {
+              const file = files[i];
+              const progressData = progress[file];
+              const maxWidth = progressData.total * scale;
+              const progressWidth = progressData.transferred * scale;
+              const x = startX;
+              const y = startHeight + (rectHeight * i) + (gap * i);
+              // draw progress bar
+              drawRect(x, y, maxWidth, rectHeight, colors.black);
+              drawRect(x, y, progressWidth, rectHeight, colors.green);
+
+              // draw text information
+              const percentage = (progressData.percent * 100).toFixed(2);
+              const textOffset = 20;
+              const textX = x + maxWidth + textOffset;
+              drawText(textX, y + rectHeight / 2, `${file} (${percentage}%)`);
+            }
+          })
+        }, 1000);
+      })();
+    </script>
+  </body>
+</html>

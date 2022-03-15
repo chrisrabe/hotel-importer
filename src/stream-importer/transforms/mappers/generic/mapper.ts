@@ -10,9 +10,18 @@ class Mapper<Input, Output> extends Transform {
   }
 
   _transform(chunk: any, encoding: BufferEncoding, done: TransformCallback) {
-    const item = this.mapper(chunk.value);
+    const data = chunk.value || this.cleanChunk(chunk);
+    const item = this.mapper(data);
     this.push(item);
     done();
+  }
+
+  private cleanChunk(chunk: any) {
+    const newObj: Record<string, any> = {};
+    for (const key of Object.keys(chunk)) {
+      newObj[key.trim()] = chunk[key];
+    }
+    return newObj;
   }
 }
 

@@ -23,6 +23,25 @@ export const hotelContentMapper = (): Mapper<GMXHotelData, HotelContent> => {
   return new Mapper<GMXHotelData, HotelContent>(mapGMXHotelDataToHotelContent);
 };
 
+export const descriptionMapper = (): Mapper<
+  GMXHotelDescription,
+  HotelDescription
+> => {
+  return new Mapper<GMXHotelDescription, HotelDescription>(
+    mapGMXDescriptionToHotelDescription
+  );
+};
+
+export const facilityMapper = (): Mapper<GMXHotelFacility, HotelFacility> => {
+  return new Mapper<GMXHotelFacility, HotelFacility>(
+    mapGMXFacilityToHotelFacility
+  );
+};
+
+export const imageMapper = (): Mapper<GMXHotelImage, HotelImage> => {
+  return new Mapper<GMXHotelImage, HotelImage>(mapGMXImageToHotelImage);
+};
+
 export const descriptionCollector = (): AttributeCollector<
   GMXHotelDescription,
   HotelDescription

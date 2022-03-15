@@ -4,8 +4,12 @@ const etl = require('etl');
 import { chain } from 'stream-chain';
 import { parser } from 'stream-json';
 import { streamArray } from 'stream-json/streamers/StreamArray';
-import { Transform } from 'stream';
+import { Transform, TransformCallback } from 'stream';
 import Papa from 'papaparse';
+import { promisify } from 'util';
+import stream from 'stream';
+
+const pipeline = promisify(stream.pipeline);
 
 export const chainFns = {
   JSON: (mapper: Transform) => [
@@ -31,31 +35,32 @@ export const createUnzipStream = async <L>(
   fileType: FileType,
   transformer: Transform,
   loader: L,
-  onClose: () => void
+  maxItems = 1000
 ) => {
-  const pipeline = chain([
+  const downloadStream = got.stream(remoteUrl);
+
+  const filePipeline = chain([
     ...chainFns[fileType](transformer),
-    etl.collect(1000),
+    etl.collect(maxItems),
     loader,
   ]);
 
-  got
-    .stream(remoteUrl)
-    .on('downloadProgress', ({ transferred, total }) => {
-      if (transferred === total) {
-        onClose();
+  const zipParser = Parse().on('error', () => ({}));
+  const fileParser = new stream.Transform({
+    objectMode: true,
+    transform(chunk: any, _: BufferEncoding, cb: TransformCallback) {
+      if (chunk.path === expectedFile) {
+        chunk.pipe(filePipeline).on('finish', cb);
+      } else {
+        chunk.autodrain();
+        cb();
       }
-      // const percentage = (percent * 100).toFixed(2);
-      // console.error(`progress: ${transferred}/${total} (${percentage}%)`);
-    })
-    .pipe(Parse().on('error', () => ({})))
-    .pipe(
-      etl.map(async (entry: any) => {
-        if (entry.path === expectedFile) {
-          return entry.pipe(pipeline);
-        } else {
-          return entry.autodrain();
-        }
-      })
-    );
+    },
+  });
+
+  try {
+    await pipeline(downloadStream, zipParser, fileParser);
+  } catch (e: any) {
+    console.error(`Something went wrong: ${e.message}`);
+  }
 };

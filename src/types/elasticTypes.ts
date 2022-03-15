@@ -4,6 +4,7 @@
  */
 export type HotelContent = {
   _id: string;
+  hotelId: string
   hotelName: string;
   images: HotelImage[];
   rating: number;
