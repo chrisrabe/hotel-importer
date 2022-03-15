@@ -47,6 +47,7 @@ class AttributeCollector<Input, Output> extends Transform {
       if (this.collection.length >= 1) {
         this.push({
           hotelId: this.id,
+          _id: this.id,
           [this.attributeKey]: this.collection,
         });
       }
@@ -63,6 +64,7 @@ class AttributeCollector<Input, Output> extends Transform {
     if (this.collection.length >= 1) {
       this.push({
         hotelId: this.id,
+        _id: this.id,
         [this.attributeKey]: this.collection,
       });
     }

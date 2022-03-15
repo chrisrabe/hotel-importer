@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
 dotenv.config();
-import { importer } from './split-importer';
+import { importer } from './stream-importer';
 
 importer().then();
