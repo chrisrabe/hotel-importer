@@ -1,4 +1,5 @@
 import { Client } from '@elastic/elasticsearch';
+import defaultConfig from './config.json';
 
 type Payload<T> = { _id: any; [x: string]: T[] };
 
@@ -34,8 +35,9 @@ export const createIndex = async (
   config?: Record<string, any>
 ): Promise<void> => {
   const indexConfig = config
-    ? { ...config, index: indexName }
+    ? { ...defaultConfig, ...config, index: indexName }
     : {
+        ...defaultConfig,
         index: indexName,
       };
   try {

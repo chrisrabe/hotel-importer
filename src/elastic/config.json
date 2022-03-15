@@ -1,0 +1,16 @@
+{
+  "body": {
+    "mappings": {
+      "dynamic": true,
+      "properties": {
+        "location": {
+          "properties": {
+            "coordinates": {
+              "type": "geo_point"
+            }
+          }
+        }
+      }
+    }
+  }
+}
