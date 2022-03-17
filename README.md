@@ -4,6 +4,12 @@
 This is the source code for the prototype of the hotel importer. Use this for
 experimentation or manual imports.
 
+## Pre-requisites
+1. Install elasticdump `npm i -G elasticdump`
+2. Run elastic and kibana (optional) container  `docker compose up`
+
+
+
 ## Getting Started
 
 1. Create a `.env` file with the following contents
@@ -20,6 +26,7 @@ experimentation or manual imports.
     ```
 2. Install dependencies through `npm install`
 3. Run the application `npm run dev`
+4. Make note of the index created in local elasticsearch as it will append a date/time stamp - this is the `NEW_INDEX_NAME`
 
 ## Performing manual imports
 1. Set up your importer to point to **your local elasticsearch**
